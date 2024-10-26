@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الموقع الديني</title>
+    <style>
+        /* تنسيقات الموقع */
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a, nav ul li button {
+            color: #fff;
+            text-decoration: none;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .main-content h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        .main-content p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .popupContent {
+            background-color: #fff;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80%;
+            overflow-y: auto;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .close-btn {
+            background-color: #2c3e50;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .close-btn:hover {
+            background-color: #34495e;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 1.1rem;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        /* تنسيق نموذج تسجيل الدخول */
+        .login-form {
+            display: none;
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .login-form input {
+            margin: 10px 0;
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-form button {
+            background-color: #2c3e50;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .login-form button:hover {
+            background-color: #34495e;
+        }
+
+        /* تنسيق المسابقة */
+        .quiz-section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .prize {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #e67e22;
+        }
+
+        .quran-image {
+            max-width: 200px;
+            margin-top: 10px;
+        }
+
+        /* تنسيق السبحه */
+        .sebha-section {
+            padding: 20px;
+            text-align: center;
+            display: none; /* إخفاء القسم بشكل افتراضي */
+        }
+
+        .sebha-button {
+            background-color: #2c3e50;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .sebha-button:hover {
+            background-color: #34495e;
+        }
+
+        /* تنسيق روابط السور */
+        .quran-links {
+            text-align: right;
+            margin: 10px 0;
+        }
+
+        .quran-links a {
+            display: block;
+            color: #2c3e50;
+            text-decoration: none;
+            margin: 5px 0;
+        }
+
+        .quran-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>الموقع الديني</h1>
+        <nav>
+            <ul>
+                <li><button onclick="openPopup('hadithPopup')">الأحاديث النبوية</button></li>
+                <li><button onclick="openPopup('quranPopup')">القرآن الكريم</button></li>
+                <li><button onclick="openPopup('azkarPopup')">أذكار الصباح والمساء</button></li>
+                <li><button onclick="openSebha()">السبحة</button></li>
+                <li><button onclick="toggleLoginForm()">تسجيل الدخول</button></li>
+                <li><button onclick="logout()" id="logoutBtn" style="display:none;">تسجيل الخروج</button></li>
+                <li><button onclick="openQuiz()">المسابقة الأسبوعية</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <h2>معلومات دينية مفيدة</h2>
+        <p>“قال رسول الله صلى الله عليه وسلم: «الدين النصيحة» قلنا: لمن يا رسول الله؟ قال: «لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم».”</p>
+        <p>“عن أبي هريرة رضي الله عنه قال: قال رسول الله صلى الله عليه وسلم: «الكلمة الطيبة صدقة».”</p>
+        <p>“إِنَّ الله يُحِبُّ العَبْدَ التَّقِيَّ، الغَنِيَّ، الخَفِيَّ.”</p>
+        <p>“المسلم من سلم المسلمون من لسانه ويده.”</p>
+        <p>“إن الله جميل يحب الجمال.”</p>
+        <p>“من لا يَرحم لا يُرحم.”</p>
+        <p>“الحياء لا يأتي إلا بخير.”</p>
+    </div>
+
+    <!-- نموذج تسجيل الدخول -->
+    <div class="login-form" id="loginForm">
+        <h2>تسجيل الدخول</h2>
+        <input type="text" id="username" placeholder="اسم المستخدم" required>
+        <input type="password" id="password" placeholder="كلمة المرور" required>
+        <button onclick="login()">دخول</button>
+    </div>
+
+    <!-- نافذة الأحاديث النبوية المنبثقة -->
+    <div id="hadithPopup" class="popup">
+        <div class="popupContent">
+            <h2>الأحاديث النبوية</h2>
+            <ul>
+                <li>إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى...</li>
+                <li>من حسن إسلام المرء تركه ما لا يعنيه.</li>
+                <li>لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه.</li>
+                <li>من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت.</li>
+                <li>إن الله جميل يحب الجمال.</li>
+                <li>إن الدين يسر ولن يشاد الدين أحد إلا غلبه.</li>
+                <li>الحياء لا يأتي إلا بخير.</li>
+                <li>من لا يَرحم لا يُرحم.</li>
+                <li>إن من أحبكم إلي وأقربكم مني مجلسا يوم القيامة أحاسنكم أخلاقا.</li>
+                <li>المسلم من سلم المسلمون من لسانه ويده.</li>
+            </ul>
+            <button class="close-btn" onclick="closePopup('hadithPopup')">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة القرآن الكريم المنبثقة -->
+    <div id="quranPopup" class="popup">
+        <div class="popupContent">
+            <h2>القرآن الكريم</h2>
+            <div class="quran-links" id="quranList"></div>
+            <button class="close-btn" onclick="closePopup('quranPopup')">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة أذكار الصباح والمساء المنبثقة -->
+    <div id="azkarPopup" class="popup">
+        <div class="popupContent">
+            <h2>أذكار الصباح والمساء</h2>
+            <ul>
+                <li>أصبحنا وأصبح الملك لله رب العالمين...</li>
+                <li>اللهم إني أسألك خير هذا اليوم...</li>
+                <li>اللهم اغفر لي وارحمني واهدني.</li>
+                <li>اللهم إني أسألك الجنة وأعوذ بك من النار.</li>
+                <li>أعوذ بكلمات الله التامات من شر ما خلق.</li>
+                <li>اللهم إني أسألك العلم النافع، والعمل الصالح.</li>
+                <li>اللهم صل على محمد وعلى آل محمد.</li>
+                <li>الحمد لله رب العالمين.</li>
+                <li>لا إله إلا أنت سبحانك إني كنت من الظالمين.</li>
+                <li>أستغفر الله ربي من كل ذنب وأتوب إليه.</li>
+                <li>اللهم عافني في بدني، عافني في سمعي، عافني في بصري.</li>
+                <li>اللهم إني أعوذ بك من الكسل، وسوء الكبر، وعذاب النار.</li>
+            </ul>
+            <button class="close-btn" onclick="closePopup('azkarPopup')">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- قسم السبحة -->
+    <div class="sebha-section" id="sebhaSection">
+        <h2>السبحة</h2>
+        <button class="sebha-button" onclick="countAzkar()">ابدأ السبحة</button>
+        <p id="sebhaCount">عدد الأذكار: 0</p>
+        <button class="close-btn" onclick="closeSebha()">إغلاق</button>
+    </div>
+
+    <!-- قسم المسابقة الأسبوعية -->
+    <div class="quiz-section" id="quizSection" style="display:none;">
+        <h2>المسابقة الأسبوعية</h2>
+        <div class="quiz-question" id="quizQuestion"></div>
+        <button class="close-btn" onclick="closeQuiz()">إغلاق</button>
+        <div class="prize">
+            الجائزة: <img src="https://www.edarabia.com/ar/wp-content/uploads/2020/10/10-benefits-holy-quran-surahs-each-surah-meaning-advantage-recitation.jpg" alt="مصحف" class="quran-image"> مصحف قيم
+        </div>
+    </div>
+
+    <!-- حقوق الطبع والنشر -->
+    <div class="footer">
+        <p>© 2024 محمد احمد عباس. جميع الحقوق محفوظة.</p>
+    </div>
+
+    <script>
+        // إضافة جميع السور القرآنية
+        const quranSurahs = [
+            { name: "الفاتحة", link: "#" },
+            { name: "البقرة", link: "#" },
+            { name: "آل عمران", link: "#" },
+            { name: "النساء", link: "#" },
+            { name: "المائدة", link: "#" },
+            { name: "الأنعام", link: "#" },
+            { name: "الأعراف", link: "#" },
+            { name: "الأنفال", link: "#" },
+            { name: "التوبة", link: "#" },
+            { name: "يونس", link: "#" },
+            { name: "هود", link: "#" },
+            { name: "يوسف", link: "#" },
+            { name: "الرعد", link: "#" },
+            { name: "إبراهيم", link: "#" },
+            { name: "الحجر", link: "#" },
+            { name: "النحل", link: "#" },
+            { name: "الإسراء", link: "#" },
+            { name: "الكهف", link: "#" },
+            { name: "مريم", link: "#" },
+            { name: "طه", link: "#" },
+            { name: "الأنبياء", link: "#" },
+            { name: "الحج", link: "#" },
+            { name: "المؤمنون", link: "#" },
+            { name: "النور", link: "#" },
+            { name: "الفرقان", link: "#" },
+            { name: "الشعراء", link: "#" },
+            { name: "النمل", link: "#" },
+            { name: "القصص", link: "#" },
+            { name: "العنكبوت", link: "#" },
+            { name: "الروم", link: "#" },
+            { name: "لقمان", link: "#" },
+            { name: "السجدة", link: "#" },
+            { name: "الأحزاب", link: "#" },
+            { name: "سبأ", link: "#" },
+            { name: "فاطر", link: "#" },
+            { name: "يس", link: "#" },
+            { name: "الصافات", link: "#" },
+            { name: "ص", link: "#" },
+            { name: "الزمر", link: "#" },
+            { name: "غافر", link: "#" },
+            { name: "فصلت", link: "#" },
+            { name: "الشورى", link: "#" },
+            { name: "الزخرف", link: "#" },
+            { name: "الدخان", link: "#" },
+            { name: "الجاثية", link: "#" },
+            { name: "الأحقاف", link: "#" },
+            { name: "محمد", link: "#" },
+            { name: "الفتح", link: "#" },
+            { name: "الحجرات", link: "#" },
+            { name: "ق", link: "#" },
+            { name: "الذاريات", link: "#" },
+            { name: "الطور", link: "#" },
+            { name: "النجم", link: "#" },
+            { name: "القمر", link: "#" },
+            { name: "الرحمن", link: "#" },
+            { name: "الواقع", link: "#" },
+            { name: "الحديد", link: "#" },
+            { name: "المجادلة", link: "#" },
+            { name: "الحشر", link: "#" },
+            { name: "الممتحنة", link: "#" },
+            { name: "السجدة", link: "#" },
+            { name: "الطلاق", link: "#" },
+            { name: "التحريم", link: "#" },
+            { name: "الملك", link: "#" },
+            { name: "القلم", link: "#" },
+            { name: "المعارج", link: "#" },
+            { name: "نوح", link: "#" },
+            { name: "الجن", link: "#" },
+            { name: "المزمل", link: "#" },
+            { name: "مدثر", link: "#" },
+            { name: "النبأ", link: "#" },
+            { name: "النازعات", link: "#" },
+            { name: "عبس", link: "#" },
+            { name: "التكوير", link: "#" },
+            { name: "الإنفطار", link: "#" },
+            { name: "المطففين", link: "#" },
+            { name: "الانشقاق", link: "#" },
+            { name: "البروج", link: "#" },
+            { name: "الطارق", link: "#" },
+            { name: "الأعلى", link: "#" },
+            { name: "الغاشية", link: "#" },
+            { name: "الفجر", link: "#" },
+            { name: "البلد", link: "#" },
+            { name: "الشمس", link: "#" },
+            { name: "الليل", link: "#" },
+            { name: "الضحى", link: "#" },
+            { name: "الشرح", link: "#" },
+            { name: "التين", link: "#" },
+            { name: "العصر", link: "#" },
+            { name: "الهمزة", link: "#" },
+            { name: "الفيل", link: "#" },
+            { name: "قريش", link: "#" },
+            { name: "الماعون", link: "#" },
+            { name: "الكوثر", link: "#" },
+            { name: "الكافرون", link: "#" },
+            { name: "النصر", link: "#" },
+            { name: "المسد", link: "#" },
+            { name: "الإخلاص", link: "#" },
+            { name: "الفلق", link: "#" },
+            { name: "الناس", link: "#" }
+        ];
+
+        // إضافة الأسئلة للمسابقة
+        const quizQuestions = [
+            "ما هي السورة التي تتحدث عن الإسراء؟",
+            "ما هو عدد سور القرآن الكريم؟",
+            "ما هي أطول سورة في القرآن الكريم؟",
+            "ما هي أقصر سورة في القرآن الكريم؟",
+            "ما السورة التي بدأت بـ 'بسم الله الرحمن الرحيم' ولم تنتهي بها؟",
+            "ما هي السورة التي تتحدث عن مريم وابنها عيسى؟",
+            "ما هو عدد آيات سورة البقرة؟",
+            "ما السورة التي تتحدث عن غزوة بدر؟",
+            "ما هي السورة التي تحتوي على آية الكرسي؟",
+            "ما السورة التي تُعرف بسورة المنافقين؟"
+        ];
+
+        let sebhaCounter = 0;
+
+        function countAzkar() {
+            sebhaCounter++;
+            document.getElementById('sebhaCount').textContent = `عدد الأذكار: ${sebhaCounter}`;
+        }
+
+        function loadQuranSurahs() {
+            const quranList = document.getElementById('quranList');
+            quranSurahs.forEach(surah => {
+                const link = document.createElement('a');
+                link.href = surah.link; // يمكنك إضافة روابط السور هنا
+                link.textContent = surah.name;
+                quranList.appendChild(link);
+            });
+        }
+
+        function openPopup(popupId) {
+            document.getElementById(popupId).style.display = 'flex';
+            if (popupId === 'quranPopup') {
+                loadQuranSurahs();
+            }
+        }
+
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+        }
+
+        function toggleLoginForm() {
+            const loginForm = document.getElementById('loginForm');
+            loginForm.style.display = (loginForm.style.display === 'none' || loginForm.style.display === '') ? 'block' : 'none';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // يمكنك إضافة تحقق من اسم المستخدم وكلمة المرور هنا
+            alert(`مرحباً بك، ${username}!`);
+            toggleLoginForm();
+            document.getElementById('logoutBtn').style.display = 'block'; // إظهار زر تسجيل الخروج
+        }
+
+        function logout() {
+            alert('تم تسجيل الخروج بنجاح.');
+            document.getElementById('logoutBtn').style.display = 'none'; // إخفاء زر تسجيل الخروج
+        }
+
+        function openSebha() {
+            document.getElementById('sebhaSection').style.display = 'block'; // عرض قسم السبحه
+        }
+
+        function closeSebha() {
+            document.getElementById('sebhaSection').style.display = 'none'; // إخفاء قسم السبحه
+        }
+
+        function openQuiz() {
+            document.getElementById('quizSection').style.display = 'block'; // عرض قسم المسابقة
+            const quizQuestion = document.getElementById('quizQuestion');
+            quizQuestion.textContent = quizQuestions[Math.floor(Math.random() * quizQuestions.length)]; // اختيار سؤال عشوائي
+        }
+
+        function closeQuiz() {
+            document.getElementById('quizSection').style.display = 'none'; // إخفاء قسم المسابقة
+        }
+
+        // تحميل السور عند تحميل الصفحة
+        window.onload = function() {
+            loadQuranSurahs();
+        }
+    </script>
+</body>
+</html>
